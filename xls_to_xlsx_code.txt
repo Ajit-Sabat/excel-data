@@ -1,0 +1,17 @@
+o = win32com.client.Dispatch("Excel.Application")
+o.Visible = False
+files = (r"C:\Users\117021\Desktop\test\SaralSheet.xls")
+wb = o.Workbooks.Open(files)
+wb.ActiveSheet.SaveAs(r"C:\Users\117021\Desktop\test\SaralSheet.xlsx")
+wb.Close(True)
+
+
+
+create new excel file
+
+from openpyxl import Workbook
+  wb= Workbook()
+  ws=wb.active
+  ws.title="DATA"
+  wb.create_sheet("Allocation")
+  wb.save("Call_Summary_Data.xlsx")

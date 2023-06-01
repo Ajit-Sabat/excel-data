@@ -1,0 +1,482 @@
+
+import pandas as pd
+import mysql.connector
+import numpy as np
+import  plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import dash
+import dash_bootstrap_components as dbc
+from dash import html,dcc,Input,Output
+from dash import dash_table
+from datetime import datetime,date
+import time
+import datetime
+
+db=mysql.connector.connect(
+    host="172.16.6.27",
+    user="Chinta",
+    password="Chinta@123",
+    database="mhl_report"
+)
+
+mycursor=db.cursor()
+mycursor.execute("SHOW TABLES")
+for x in mycursor:
+    print(x)
+
+
+
+mycursor.execute("SELECT * FROM mhl_report.acd_report")
+
+result=mycursor.fetchall()
+# print(result)
+# for x in result:
+#     print(x)
+
+table=[]
+for data in result:
+    data=list(data)
+    table.append(data)
+#
+# print(table)
+columns=["id","call_date","Interval","Service_Name","Offered","Agent","Offered_On_Agent","Answered_On_Agent",
+         "Answered_10_Sec","Answered_20_Sec","Answered_30_Sec","Answered_40_Sec","Answered_50_Sec","Answered_60_Sec",
+         "Answered_90_Sec","Answered_120_Sec","Answered_>_120_Sec","Queue_Time","Calls_In_Queue",	"TalkTime",
+         "Wrapup_Time","HoldTime","Call_Abandoned","Abandoned_On_Ivr","Abandoned_On_Agent","Abandoned_10_Sec",
+         "Abandoned_20_Sec","Abandoned_30_Sec","Abandoned_40_Sec","Abandoned_50_Sec","Abandoned_60_Sec",
+         "Abandoned_90_Sec","Abandoned_120_Sec","Abandoned>120_Sec","Answered_Percent","Abandoned_Percent","NONE"]
+#
+df=pd.DataFrame(table,columns=columns)
+#print(df)
+#print(df.shape)
+df_copy=df.sort_values(by="call_date")
+# db.close()
+
+df_copy.drop("NONE",axis=1,inplace=True)
+#print(df_copy.head())
+#print(df_copy.shape)
+# print(df_copy.info())
+#
+# print(df_copy)
+#
+#
+# # COnverting Data Ty
+df_copy["id"]=df_copy["id"].astype(int)
+df_copy["Offered"]=df_copy["Offered"].astype(int)
+df_copy["Agent"]=df_copy["Agent"].astype(int)
+df_copy["Offered_On_Agent"]=df_copy["Offered_On_Agent"].astype(int)
+df_copy["Answered_On_Agent"]=df_copy["Answered_On_Agent"].astype(int)
+df_copy["Answered_10_Sec"]=df_copy["Answered_10_Sec"].astype(int)
+df_copy["Answered_20_Sec"]=df_copy["Answered_20_Sec"].astype(int)
+df_copy["Answered_30_Sec"]=df_copy["Answered_30_Sec"].astype(int)
+df_copy["Answered_40_Sec"]=df_copy["Answered_40_Sec"].astype(int)
+df_copy["Answered_50_Sec"]=df_copy["Answered_50_Sec"].astype(int)
+df_copy["Answered_60_Sec"]=df_copy["Answered_60_Sec"].astype(int)
+df_copy["Answered_90_Sec"]=df_copy["Answered_90_Sec"].astype(int)
+df_copy["Answered_120_Sec"]=df_copy["Answered_120_Sec"].astype(int)
+df_copy["Answered_>_120_Sec"]=df_copy["Answered_>_120_Sec"].astype(int)
+df_copy["Calls_In_Queue"]=df_copy["Calls_In_Queue"].astype(int)
+df_copy["Call_Abandoned"]=df_copy["Call_Abandoned"].astype(int)
+df_copy["Abandoned_On_Ivr"]=df_copy["Abandoned_On_Ivr"].astype(int)
+df_copy["Abandoned_On_Agent"]=df_copy["Abandoned_On_Agent"].astype(int)
+df_copy["Abandoned_10_Sec"]=df_copy["Abandoned_10_Sec"].astype(int)
+df_copy["Abandoned_20_Sec"]=df_copy["Abandoned_20_Sec"].astype(int)
+df_copy["Abandoned_30_Sec"]=df_copy["Abandoned_30_Sec"].astype(int)
+df_copy["Abandoned_40_Sec"]=df_copy["Abandoned_40_Sec"].astype(int)
+df_copy["Abandoned_50_Sec"]=df_copy["Abandoned_50_Sec"].astype(int)
+df_copy["Abandoned_60_Sec"]=df_copy["Abandoned_60_Sec"].astype(int)
+df_copy["Abandoned_90_Sec"]=df_copy["Abandoned_90_Sec"].astype(int)
+df_copy["Abandoned_120_Sec"]=df_copy["Abandoned_120_Sec"].astype(int)
+df_copy["Abandoned>120_Sec"]=df_copy["Abandoned>120_Sec"].astype(int)
+df_copy["Abandoned_Percent"]=df_copy["Abandoned_Percent"].astype(int)
+df_copy["Answered_Percent"]=df_copy["Answered_Percent"].astype(int)
+df_copy["call_date"]=pd.to_datetime(df_copy["call_date"],errors="coerce")
+# df_copy["Interval"]=pd.to_datetime(df_copy["Interval"])
+df_copy["Queue_Time"]=pd.to_timedelta(df_copy["Queue_Time"])
+df_copy["Calls_In_Queue"]=pd.to_timedelta(df_copy["Calls_In_Queue"])
+df_copy["TalkTime"]=pd.to_timedelta(df_copy["TalkTime"])
+df_copy["Wrapup_Time"]=pd.to_timedelta(df_copy["Wrapup_Time"])
+df_copy["HoldTime"]=pd.to_timedelta(df["HoldTime"])
+
+#print(df_copy.info())
+#print(df_copy["Interval"])
+df_copy["Interval"]=df_copy["Interval"].str.replace(":00",":00:00")
+# df_excel=pd.read_excel("lookups.xlsx")
+# merged_df=pd.merge(df_copy,df_excel,how="inner",on=["Interval"])
+#
+# # --------------KPI----------------------
+merged_df=df_copy.loc[:,['id', 'call_date', 'Interval','Offered','Answered_On_Agent', 'Answered_10_Sec',
+       'Answered_20_Sec', 'Answered_30_Sec','TalkTime', 'Wrapup_Time', 'HoldTime',
+       'Call_Abandoned','Abandoned_10_Sec']]
+print(merged_df.shape)
+#
+merged_df["With_In_SL_Calls"]=merged_df[["Answered_10_Sec","Answered_20_Sec","Answered_30_Sec"]].sum(axis=1)
+#df_copy["call_ab-10_sec"]=df_copy["Call_Abandoned"]-df_copy["Abandoned_10_Sec"]
+merged_df["Abandoned_%"]=(merged_df.Call_Abandoned-merged_df.Abandoned_10_Sec)/(merged_df["Offered"])
+merged_df["Abandoned_%"]=merged_df["Abandoned_%"].fillna(0)
+merged_df["Abandoned_%"]=round(merged_df["Abandoned_%"],2)
+merged_df["Sl_percent"]=round((merged_df["With_In_SL_Calls"]/(merged_df["Offered"]-merged_df["Abandoned_10_Sec"])),2)
+merged_df["Sl_percent"]=merged_df["Sl_percent"].fillna(0)
+
+merged_df["Offered-10_sec"]=merged_df["Offered"]-merged_df["Abandoned_10_Sec"]
+
+merged_df["T+H+W_time"]=merged_df[["HoldTime","TalkTime","Wrapup_Time"]].sum(axis=1)
+#print(df_copy["T+H+W_time"])
+merged_df["T+H+W_time"]=merged_df["T+H+W_time"].dt.total_seconds()
+#print(df_copy["T+H+W_time"])
+
+#
+merged_df["AHT"]=round((merged_df["T+H+W_time"]/merged_df["Answered_On_Agent"]))
+merged_df["AHT"]=merged_df["AHT"].fillna(0)
+# merged_df["AHT"]=pd.to_timedelta(merged_df["AHT"],unit="s")
+# merged_df["AHT"]=merged_df["AHT"].astype(str)
+# merged_df["AHT"]=merged_df["AHT"].str.replace("0 days ","")
+merged_df["AHT"]=pd.to_datetime(merged_df["AHT"],unit="s")
+print(merged_df["AHT"])
+
+merged_df[['start_time', 'end_time']] = merged_df.Interval.str.split("-", expand=True)
+# df_copy['start_time']=df_copy['start_time'].str.replace(":00",":00:00")
+# df_copy["end_time"]=df_copy['end_time'].str.replace(":00",":00:00")
+merged_df["start_time"]=pd.to_timedelta(merged_df["start_time"]).dt.components["hours"]
+merged_df["end_time"]=pd.to_timedelta(merged_df["end_time"]).dt.components["hours"]
+
+
+data=pd.DataFrame(merged_df.groupby(["call_date","Interval","start_time"],as_index=False)
+                 [["Offered","Answered_On_Agent","Abandoned_%","Sl_percent","AHT"]].sum())
+print(merged_df["start_time"])
+
+time_interval={1:"0-1",2:"1-2",3:'2-3',4:"3-4",5:"4-5",6:"5-6",7:"6-7",8:"7-8",9:"8-9",10:"9-10",
+                11:"10-11",12:"11-12",13:"12-13",14:"13-14",15:"14-15",16:"15-16",17:"16-17",18:"17-18",
+               19:"18-19",20:"19-20",21:"20-21",22:"21-22",23:"22-23",0:'23-0'}
+data["time_interval"]=data["start_time"].map(time_interval)
+# # #-----------------------------------------LAYOUT---------------------------------------------------------
+#
+app=dash.Dash(__name__,external_stylesheets=[dbc.themes.DARKLY])
+#
+#
+app.layout=dbc.Container([
+    dbc.Row([
+        dbc.Col([
+            dbc.Row([html.Img(src="/assets/MetroLogo.png",style={'height': '80px',
+                            'width': 'auto',
+                            'margin-bottom': '25px'})
+               
+              
+        ],justify="around",className="mb-1 mt-1"),
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H5("Offered",style={"textAlign":"center","color":"white","fontWeight":"bold"}),
+                            html.H4(id="Total_offered",children="",style={'textAlign': 'center',
+                      'color': 'white',"fontWeight":"bold","background":"#222741",
+                      'fontSize': 25,
+                      'margin-top': '10px'}),
+
+                        ])
+                    ],style={"backgroundColor":'#222741'})
+                ],width=6)
+            ],justify="around",className="mb-1 mt-1"),
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H5("Answered",style={"textAlign":"center","color":"white","fontWeight":"bold"}),
+                            html.H4(id="Total_Answered", children="", style={'textAlign': 'center',
+                      'color': 'white',"fontWeight":"bold","background":"#222741",
+                      'fontSize': 25,
+                        "margin-top":"8px"}),
+
+                        ])
+                    ],style={"backgroundColor":'#222741'})
+                ], width=6)
+            ],justify="around",className="mb-1 mt-1"),
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H5("Abandoned",style={"textAlign":"center","color":"white","fontWeight":"bold"}),
+                            html.H4(id="abd Percent", children="", style={'textAlign': 'center',
+                      'color': 'white',"fontWeight":"bold","background":"#222741",
+                      'fontSize': 25,
+                      "margin-top":"8px"}),
+
+                        ])
+                    ],style={"backgroundColor":'#222741'})
+                ], width=6)
+            ],justify="around", className="mb-1 mt-1"),
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H5("AHT",style={"textAlign":"center","color":"white","fontWeight":"bold"}),
+                            html.H4(id="AHT", children="", style={'textAlign': 'center',"fontWeight":"bold",
+                                                                             'color': 'white',"background":"#222741",
+                                                                             'fontSize': 25,
+                                                                             "margin-top": "8px"}),
+
+                        ])
+                    ],style={"backgroundColor":'#222741'})
+                ], width=6)
+            ],justify="around", className="mb-1 mt-1"),
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.H5("SL %",style={"textAlign":"center","color":"white","fontWeight":"bold"}),
+                            html.H4(id="SL", children="", style={'textAlign': 'center',"fontWeight":"bold",
+                                                                             'color': 'white',"background":"#222741",
+                                                                             'fontSize': 25,
+                                                                             "margin-top": "8px"
+                                                                             }),
+
+                        ])
+                    ],style={"backgroundColor":'#222741'})
+                ], width=6)
+            ],justify="around", className="mb-1 mt-1"),
+        ],width=3),
+        dbc.Col([
+            dbc.Row([
+                dbc.Col([
+                    html.H5("Date :")
+                ],width=1),
+                dbc.Col([
+                    dcc.Dropdown(id="my-dropdown",
+                                 options=df_copy["call_date"].dt.date.unique(),
+                                 value=date.today(),style={"backgroundColor":'white',
+                                                           "color":"#010915",
+                                                           "fontWeight":"bold"})
+                ],width=4),
+                dbc.Col([
+                    html.H5("Select Time :")
+                ],width=1),
+                dbc.Col([
+                    dcc.Dropdown(id="Time",options=data["start_time"].unique(),
+                                 value=10,style={"backgroundColor":'white',
+                                                           "color":"#010915",
+                                                           "fontWeight":"bold"})
+                ],width=2)
+            ],justify="left",className="mt-1 mb-1"),
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            #html.P("My Chart"),
+                            dcc.Graph(id="My graph"
+                                ),
+                        ])
+                    ],style={'background':"#222741"})
+                ],width=12)
+            ],className="mb-1"),
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            #html.P("Data Table"),
+                            dash_table.DataTable(id="Table",
+                                columns=[{"name":i,"id":i,"selectable":True}
+                                         if i=="start_time"
+                                         else {'name': i, 'id': i} for i in data.loc[:,["start_time","call_date","Offered","Answered_On_Agent","Abandoned_%","Sl_percent"]]],
+                                   #virtualization=True,
+                                   #page_size=6,
+                                    data=data.to_dict("records"),
+                                    filter_action="native",
+                                   row_selectable="multi",
+                                   selected_rows=[],
+                                   selected_columns=[],
+                                   page_action="none",
+                                   style_table={'height': '250px', 'overflowY': 'auto'},
+                                   style_cell={"textAlign":"left",
+                                               "min-width":"130px",
+                                               "backgroundColor":'#222741',
+                                               "color":"white",
+                                               "border-bottom":"0.01rem solid white"},
+                                   style_header={"backgroundColor":"#222741","color":"white",
+                                                 "fontWeight":"bold",
+                                                 },
+                                   style_data={"textOverflow":"hidden",
+                                               "color":"white"},
+                                   fixed_rows={"headers":True}
+                                    ),
+                                ]),
+                    ],style={'background':"#222741"}),
+                ],width=11)
+            ])
+        ],width=9),
+
+    ]),#,justify="left"),
+],fluid=True,style={"background":"#222741"})
+
+
+
+@app.callback(
+    Output("Total_offered","children"),
+    Output("Total_Answered", "children"),
+    Input("my-dropdown", "value")
+     #Input("Time","value")]
+)
+def kpi_update(selected_date):
+    offered=merged_df.groupby(["call_date","start_time"])["Offered"].sum().reset_index()
+    total_offered=offered[(offered.call_date == selected_date)]["Offered"].sum()
+    offered_format=f"{total_offered:}"
+
+    ans=merged_df.groupby(["call_date","start_time"])["Answered_On_Agent"].sum().reset_index()
+    total_answered=ans[(ans.call_date==selected_date)]["Answered_On_Agent"].sum()
+    ans_format=f"{total_answered:}"
+
+    return offered_format,ans_format
+#
+@app.callback(
+    Output("abd Percent", "children"),
+    Input("my-dropdown", "value"),
+    # Input("Time","value")]
+)
+
+def update_kpi(select_date):
+    df_new=merged_df[(merged_df.call_date ==select_date)]
+    abandoned_percent=round(((df_new["Call_Abandoned"]-df_new["Abandoned_10_Sec"]).sum()/df_new["Offered"].sum())*100,2)
+    aband_format=f"{abandoned_percent}%"
+    return aband_format
+
+
+
+
+@app.callback(
+    Output("AHT", "children"),
+    [Input("my-dropdown", "value"),
+    Input("Time","value")]
+)
+
+def update_kpi(dd_date,time):
+    df_aht=merged_df[(merged_df.call_date ==dd_date)&(merged_df.start_time==time)]
+    AHT_1=round((df_aht["T+H+W_time"].sum()//df_aht["Answered_On_Agent"].sum()))
+
+    m=AHT_1//60
+    AHT_1 %= 60
+    second = AHT_1
+    AHT_2= pd.to_timedelta(AHT_1, unit="s")
+    # AHT_str = AT_2.astype("str")
+    # AHT_time = AHT_2.str.replace("0 days ", "")
+    AHT = f"{m}:{second}"
+    return AHT
+
+@app.callback(
+    Output("SL", "children"),
+    Input("my-dropdown", "value"),
+    # Input("Time","value")],
+)
+
+def update_kpi(date):
+    df_new=merged_df[(merged_df.call_date==date)]
+    SL_percent=round((df_new["With_In_SL_Calls"].sum()/df_new["Offered-10_sec"].sum())*100,2)
+    SL_format = f"{SL_percent}%"
+    return SL_format
+
+@app.callback(
+    Output("My graph","figure"),
+    Input("my-dropdown","value"),
+
+)
+def update_graph(date_value):
+
+    graph_data=merged_df.groupby(["call_date",'start_time'])["Call_Abandoned","Offered","Answered_On_Agent"].sum().reset_index()
+    fig=make_subplots(specs=[[{"secondary_y":True}]])
+    fig.add_trace(go.Scatter(x=graph_data[graph_data["call_date"]==date_value]["start_time"],
+                  y=graph_data[graph_data["call_date"]==date_value]["Answered_On_Agent"],
+                  name="Answered",mode="lines",line=dict(color="#FF6361")),secondary_y=False)
+    fig.add_trace(go.Scatter(x=graph_data[graph_data["call_date"] == date_value]["start_time"],
+                             y=graph_data[graph_data["call_date"] == date_value]["Offered"],
+                             name="offered",yaxis="y2",mode="lines",line=dict(color="#BC5090")
+                             ), secondary_y=False),
+    fig.add_trace(go.Scatter(x=graph_data[graph_data["call_date"]==date_value]["start_time"],
+                             y=graph_data[graph_data["call_date"]==date_value]["Call_Abandoned"],
+                             name="Abandoned",yaxis="y3",mode="lines",line=dict(color="#FFA600")),secondary_y=True)
+    fig.update_xaxes(tickvals=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+                          tickformat="H%:M%",
+                     title_text="Time in Hrs.")
+    fig.update_yaxes(
+        title_text="Call_Abandoned",range=[0,100],
+        secondary_y=True)
+    fig.update_yaxes(
+        title_text="Offered",range=[0,300],
+        secondary_y=False)
+    # fig.update_yaxes(
+    #     title_text="Answered",
+    #     secondary_y=False)
+    fig.update_layout(height=280,plot_bgcolor="#222741",paper_bgcolor="#222741",showlegend=False,
+                      # legend=dict(orientation="h",
+                      #             yanchor="bottom",
+                      #             y=1.2,
+                      #             xanchor="left",
+                      #             x=.05,
+                      #             font=dict(size=18,color="white")),
+                      hovermode="x unified",
+                      hoverlabel=dict(
+                                bgcolor="black",
+                                font_size=16,
+                                #font_family="Rockwell"
+                                    ),
+                      font=dict(family='sans-serif',
+                      color='white',
+                      size=12),
+                      xaxis=dict(title='<b>Time-interval</b>',
+                                 color='white',
+                                 showline=True,
+                                 showgrid=False,
+                                 showticklabels=True,
+                                 linecolor='white',
+                                 linewidth=1,
+                                 ticks='outside',
+                                 tickfont=dict(
+                                    # family='Aerial',
+                                     color='white',
+                                     size=12
+                                 )),
+                      yaxis=dict(title="Offered / Answered",
+                                 color='white',
+                                 showline=False,
+                                 showgrid=False,
+                                 showticklabels=True,
+                                 linecolor='white',
+                                 linewidth=1,
+                                 ticks='outside',
+                                 tickfont=dict(
+                                     #family='Aerial',
+                                     color='white',
+                                     size=12
+                                 )
+                                 ),
+                      yaxis2=dict(title="Abandoned",
+                          color='white',
+                          showline=True,
+                          showgrid=False,
+                          showticklabels=True,
+                          linecolor='white',
+                          linewidth=1,
+                          ticks='outside',
+                          tickfont=dict(
+                             # family='Aerial',
+                              color='white',
+                              size=12,
+                              # anchor="free",
+                              # overlaying="y",
+                              # side="left",
+                              # position=0.15
+                          )
+                      ))
+    return fig
+                     
+
+@app.callback(
+    Output("Table","data"),
+    Input("my-dropdown","value")
+)
+
+def update_table(date_dd):
+    new_table=data[data["call_date"]==date_dd]
+    return new_table.to_dict("records")
+
+
+if __name__ == "__main__":
+    app.run_server(debug=True,port=8555)

@@ -1,0 +1,16 @@
+import os, shutil
+scr="C:\\Users\\60237\\Desktop\\ajit"
+dest="\\\\172.16.10.106\\ba_mis\\\Mehboob\\Ajit"
+
+files=os.listdir(scr)
+print(files)
+files2=os.listdir(dest)
+print((files2))
+os.chdir(scr)
+for file in files:
+    if os.path.isfile(file):
+        print(dest)
+        full_dest=os.path.join(dest,file)
+        print(full_dest)
+        print("\n")
+        shutil.copy(file,full_dest)

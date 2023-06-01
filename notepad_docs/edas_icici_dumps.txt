@@ -1,0 +1,109 @@
+import pyautogui
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import datetime
+from datetime import datetime,timedelta
+import pyautogui
+import time
+import schedule
+import pyscreeze
+import openpyxl
+import xlwings as xw
+from selenium.webdriver.support.ui import Select
+import keyboard
+import xlwings as xl
+import axes
+
+pyautogui.FAILSAFE=False
+
+driver = webdriver.Chrome(executable_path='\\\\172.16.10.106\\ba_mis\\Mehboob\\chromedriver103\\chromedriver.exe')
+driver.maximize_window()
+driver.get("http://172.16.4.96/eos/admin.php?ADD=404040")
+pyautogui.write("114807")
+pyautogui.press("tab")
+pyautogui.write("114807")
+pyautogui.press("tab")
+pyautogui.press("enter")
+# call_reg = driver.find_element(By.XPATH, "//a[@href='/eos/admin.php?ADD=505050']")
+# call_reg.click()
+# driver.switch_to.window(driver.window_handles[1])
+for i in range(1,31):
+    print(i)
+    window = driver.window_handles
+    driver.switch_to.window(window[0])
+    time.sleep(2)
+    from_date = driver.find_element(By.XPATH, "//input[@id='from']")
+    from_date.click()
+    pyautogui.keyDown('ctrl')
+    pyautogui.press('a')
+    pyautogui.keyUp('ctrl')
+    pyautogui.press('delete')
+    date1 = datetime.strftime(datetime.now() - timedelta(i), '%m/%d/%Y')
+    from_date.send_keys(date1)
+    # pyautogui.write(date1)
+    time.sleep(2)
+    to_date = driver.find_element(By.XPATH, "//input[@id='to']")
+    to_date.click()
+    pyautogui.keyDown('ctrl')
+    pyautogui.press('a')
+    pyautogui.keyUp('ctrl')
+    pyautogui.press('delete')
+    date = datetime.strftime(datetime.now() - timedelta(i), '%m_%d_%Y')
+    # pyautogui.write(date1)
+    to_date.send_keys(date1)
+    campaign=driver.find_element(By.XPATH,"//select[@id='check_list']")
+    campaign.click()
+    dropDown = driver.find_element(By.XPATH, "//select[@id='check_list']")
+    select = Select(dropDown)
+
+    select.select_by_visible_text('ICICIDC1')
+    submit=driver.find_element(By.XPATH, "//input[@class='btn btn-success']")
+    submit.click()
+    time.sleep(5)
+
+    window = driver.window_handles
+    driver.switch_to.window(window[1])
+    time.sleep(2)
+    csv = driver.find_element(By.XPATH, "//span[contains(text(),'CSV')]")
+    csv.click()
+    time.sleep(5)
+    pyautogui.moveTo(125, 700)
+    time.sleep(2)
+    pyautogui.click()
+    time.sleep(5)
+    path="\\\\172.16.10.106\\mis\Reports\\ICICI_Securities\\dump_2\\ICICIDC1\\"+date+"_ICICIDC1"
+    time.sleep(2)
+    pyautogui.press("F12")
+    time.sleep(2)
+    pyautogui.typewrite(path)
+    time.sleep(1)
+    pyautogui.press("tab")
+    time.sleep(.5)
+    pyautogui.press("down")
+    time.sleep(.5)
+    pyautogui.press("down")
+    time.sleep(.5)
+    pyautogui.press("down")
+    time.sleep(.5)
+    pyautogui.press("down")
+    time.sleep(1)
+    pyautogui.press("enter")
+    time.sleep(2)
+    pyautogui.press("enter")
+    # pyautogui.press("tab")
+    #pyautogui.press("tab")
+    #pyautogui.press("enter")
+    time.sleep(1)
+    pyautogui.moveTo(1334, 15)
+    pyautogui.click()
+    time.sleep(1)
+    pyautogui.press("tab")
+    pyautogui.press("enter")
+    time.sleep(2)
+    #pyautogui.click()
+    driver.switch_to.window(window[1])
+    driver.close()
+
+
+
+

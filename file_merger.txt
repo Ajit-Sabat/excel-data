@@ -1,0 +1,13 @@
+files=os.listdir("\\\\172.16.10.106\\ba_mis\\Mehboob\\IDEALLOS DUMP BL\\March_BL")
+print(len(files))
+print(files)
+
+excl_list = []
+path="\\\\172.16.10.106\\ba_mis\\Mehboob\\IDEALLOS DUMP BL\\March_BL"
+
+for file in files:
+    print(file)
+    excl_list.append(pd.read_excel(path+"/"+file))
+
+Feb_22= pd.concat(excl_list)
+Feb_22.to_excel("\\\\172.16.10.106\\ba_mis\\Mehboob\\IDEALLOS DUMP BL\\March_BL\\Mar-Apr.xlsx",index=False)

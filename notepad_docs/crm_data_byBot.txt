@@ -1,0 +1,213 @@
+C:\Users\chintamaniaa\PycharmProjects\WonderChef_NRC\venv\Scripts\python.exe C:/Users/chintamaniaa/PycharmProjects/WonderChef_NRC/wonderchef_nrc.py
+273
+          CALL ID
+0    MA0208220003
+1    GA0308220001
+2    MA2907220056
+3    MA0308220033
+4    MA0208220120
+..            ...
+268  KA1708220025
+269  JH0608220011
+270  TN1008220005
+271  TN1608220008
+272  MP0908220006
+
+[273 rows x 1 columns]
+C:\Users\chintamaniaa\PycharmProjects\WonderChef_NRC\wonderchef_nrc.py:21: DeprecationWarning: executable_path has been deprecated, please pass in a Service object
+  driver = webdriver.Chrome(executable_path='\\\\172.16.10.106\\ba_mis\\Mehboob\\chromedriver104\\chromedriver.exe')
+MA0208220003
+SHIVAJINAVGIRE7909@GMAIL.COM
+5
+attachment available
+GA0308220001
+ 
+1
+Attachment Not Found
+MA2907220056
+smruthi.masurker@gmail.com
+1
+Attachment Not Found
+MA0308220033
+sokhimanpreetkaur1@gmail.com
+1
+Attachment Not Found
+MA0208220120
+HITASHBHANDARI47@GMAIL.COM
+1
+Attachment Not Found
+HP0308220001
+92shilpa.sharma@gmail.com
+1
+Attachment Not Found
+BH0308220019
+mishraroshan06@gmail.com
+1
+Attachment Not Found
+GJ0308220017
+ 
+1
+Attachment Not Found
+BH0208220004
+kumarpavan92077@gmail.com
+1
+Attachment Not Found
+MA0308220031
+saniya.balbale74@gmail.com
+3
+attachment available
+RJ2807220009
+ 
+1
+Attachment Not Found
+BH2807220002
+brajeshkumar1996@gmail.com
+1
+Attachment Not Found
+UP0308220015
+ 
+1
+Attachment Not Found
+CT0208220003
+ 
+5
+attachment available
+HP0308220003
+goravmahajan25@gmail.com
+1
+Attachment Not Found
+KA1507220016
+aayshasultana54834@gmail.com
+1
+Attachment Not Found
+UP0308220020
+jmahbash@ymail.com
+1
+Attachment Not Found
+UP0408220058
+ 
+1
+Attachment Not Found
+UP0408220021
+ 
+1
+Attachment Not Found
+UP0408220022
+ 
+1
+Attachment Not Found
+OR2707220007
+biswaprakash.dop@gmail.com
+1
+Attachment Not Found
+AP0408220002
+jayarajugella@gmail.com
+1
+Attachment Not Found
+BH0108220010
+mishraroshan06@gmail.com
+1
+Attachment Not Found
+BH0308220015
+ 
+1
+Attachment Not Found
+OR0308220008
+xyz@gmail.com
+1
+Attachment Not Found
+BH0408220003
+ 
+1
+Attachment Not Found
+BH0408220002
+ 
+1
+Attachment Not Found
+UT0308220003
+ 
+4
+attachment available
+UP0408220049
+jmahbash@ymail.com
+1
+Attachment Not Found
+MA0508220086
+abhishekjaiswal07012@gmail.com
+1
+Attachment Not Found
+KA0508220002
+mohammed786ameen@gmail.com
+7
+attachment available
+KA0408220020
+yadu3461@gmail.com
+4
+attachment available
+PB0408220002
+sagarpriya034@gmail.com
+4
+attachment available
+WB0508220012
+bhumikasiddhi@gmail.com
+1
+Attachment Not Found
+UP0508220020
+ 
+1
+Attachment Not Found
+UP0508220014
+riyaz13@gmail.com
+1
+Attachment Not Found
+BH0308220021
+mishraroshan06@gmail.com
+1
+Attachment Not Found
+KA0408220024
+raghavendra.aari@gmail.com
+1
+Attachment Not Found
+KA0508220006
+mallikarjun2202@gmail.com
+1
+Attachment Not Found
+DL0408220005
+ 
+1
+Attachment Not Found
+UP0508220002
+ 
+4
+attachment available
+AR0508220001
+ 
+1
+Attachment Not Found
+GJ0508220015
+nikitakapadia75@gmail.com
+4
+attachment available
+MA0108220134
+ 
+1
+Attachment Not Found
+KL3007220013
+ 
+4
+attachment available
+MA0108220046
+ 
+1
+Attachment Not Found
+HR0108220010
+sarthaksaru23@gmail.com
+5
+attachment available
+TN0408220009
+Traceback (most recent call last):
+  File "C:\Users\chintamaniaa\PycharmProjects\WonderChef_NRC\wonderchef_nrc.py", line 47, in <module>
+    time.sleep(7)
+KeyboardInterrupt
+
+Process finished with exit code -1073741510 (0xC000013A: interrupted by Ctrl+C)

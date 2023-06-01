@@ -1,0 +1,37 @@
+import pandas as pd
+from openpyxl import Workbook
+import xlwings as xw
+import numpy as np
+import re
+
+data=pd.read_excel("C:\\Users\\chintam\\Desktop\\carrier\\1_INDIA MIS 1.1.xlsx",sheet_name="RAW")
+df=data[~(data["Dealer list"].isnull())]
+length=df["Dealer list"].nunique()
+df["Dealer list"].unique()
+
+for i in range(length):
+    dealer=df["Dealer list"].iloc[i]
+    cleanedDealer = re.sub('[],\-,.,[,]', '', dealer).strip()
+    print(cleanedDealer)
+
+    path="D:\\Process Dump\\carrier_output\\"+cleanedDealer+".xlsx"
+
+    # path=r"D:\Process Dump\test1.xlsx"
+
+    #create DF
+    # df = pd.DataFrame([[7,2,3],[1,2,3]], columns=list('ABC'))
+    Dealer_data=data[data["Dealer list"]==str(cleanedDealer)]
+
+    #load workbook
+    app = xw.App(visible=False)
+    wb = xw.Book('C:\\Users\\chintam\\Desktop\\carrier\\Template.xlsx')
+    ws = wb.sheets['RAW']
+
+    #Update workbook at specified range
+    ws.range('A1').options(index=False).value = Dealer_data
+
+
+    #Close workbook
+    wb.save(path)
+    wb.close()
+    app.quit()

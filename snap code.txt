@@ -1,0 +1,60 @@
+import smtplib
+from email.message import EmailMessage
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email.mime.text import MIMEText
+from email.utils import formatdate
+from email import encoders
+import pandas as pd
+from openpyxl import load_workbook
+
+wb = load_workbook(filename='C:\\Users\\60237\\Desktop\\MAIL_Arun\\EOS Dashboard Feb (AMIT) 2023.xlsx',data_only=True, read_only=True)
+sheets = wb.sheetnames
+print(sheets)
+# ws = wb['snap']
+ws = wb[sheets[1]]
+
+# Read the cell values into a list of lists
+data_rows = []
+for row in ws['B1':'M5']:
+    data_cols = []
+    for cell in row:
+        print(cell.value)
+        data_cols.append(cell.value)
+    data_rows.append(data_cols)
+print(data_rows)
+# Transform into dataframe
+import pandas as pd
+df = pd.DataFrame(data_rows)
+print(df.head())
+df.to_excel("C:\\Users\\60237\\Desktop\\MAIL_Arun\\eos_amit.xlsx")
+
+# df = pd.read_excel('C:\\Users\\60237\\Desktop\\New Microsoft Excel Worksheet.xlsx',index_col=False, nrows = 5)
+# body = df.to_html()
+# print(body)
+# msg = MIMEMultipart()
+# # msg = EmailMessage()
+# msg['Subject'] = 'test mail'
+# # msg['cc'] = 'ajits@eosglobe.com'
+# msg['From'] = 'BI'
+# msg['To'] = 'mehboobh@eosglobe.com'
+# msg.HTMLBody = (body)
+#
+# body = MIMEText(body, 'html')
+# msg.attach(body)
+
+# with open('EmailTemplate') as template:
+#     data = template.read()
+#     msg.set_content(data)
+
+
+# part = MIMEBase('application', "octet-stream")
+# # part.set_payload(open("C:\\Users\\60237\\PycharmProjects\\Carrier\\Carrier Extracted Data.xlsx", "rb").read())
+# encoders.encode_base64(part)
+# part.add_header('inline', msg.HTMLBody)
+# msg.attach(part)
+
+#with smtplib.SMTP_SSL_PORT('smtp.eosglobe.com', 587) as server:
+# server = smtplib.SMTP('mail.eosglobe.com', 587)
+# server.login("eosautomis@eosglobe.com", "E0s@globe")
+# server.send_message(msg)

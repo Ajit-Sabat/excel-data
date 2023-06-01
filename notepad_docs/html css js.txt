@@ -1,0 +1,120 @@
+<table >
+				<tr>
+					<td><b>TENURE </b></td>
+					<td><b>6 Months</b></td>
+					<td><b>12 Months</b></td>
+					<td><b>24 Months</b></td>
+					<td><b>36 Months</b></td>
+					<td><b>48 Months</b></td>
+					<td><b>60 Months</b></td>
+				  </tr>
+				  <tr>
+					<td><b>Loan Amount</b></td>
+					<td id="amt1">00</td>
+					<td id="amt2">00</td>
+					<td id="amt3">00 </td>
+					<td id="amt4">00</td>
+					<td id="amt5">00</td>
+					<td id="amt6">00</td>
+				  </tr>
+				  <tr>
+					<td><b>Interest %</b></td>
+					<td id="int1">00</td>
+					<td id="int2">00</td>
+					<td id="int3">00 </td>
+					<td id="int4">00</td>
+					<td id="int5">00</td>
+					<td id="int6">00</td>
+				  </tr>
+				  <tr>
+					<td><b>Number of Months</b></td>
+					<td id="period1">00</td>
+					<td id="period2">00</td>
+					<td id="period3">00 </td>
+					<td id="period4">00</td>
+					<td id="period5">00</td>
+					<td id="period6">00</td>
+				  </tr>
+				  <tr>
+					<td><b>Loan EMI </b></td>
+					<td id="emi1">00</td>
+					<td id="emi2">00</td>
+					<td id="emi3">00 </td>
+					<td id="emi4">00</td>
+					<td id="emi5">00</td>
+					<td id="emi6">00</td>
+				  </tr>
+				  <tr>
+					<td><b>Overall Amount</b></td>
+					<td id="total1">00</td>
+					<td id="total2">00</td>
+					<td id="total3">00 </td>
+					<td id="total4">00</td>
+					<td id="total5">00</td>
+					<td id="total6">00</td>
+				  </tr>
+				  <tr>
+					<td><b>Commission</b></td>
+					<td id="com_1">00</td>
+					<td id="com_2">00</td>
+					<td id="com_3">00 </td>
+					<td id="com_4">00</td>
+					<td id="com_5">00</td>
+					<td id="com_6">00</td>
+				  </tr>
+				  <tr>
+					<td><b>Flat</b></td>
+					<td id="flat1">00</td>
+					<td id="flat2">00</td>
+					<td id="flat3">00 </td>
+					<td id="flat4">00</td>
+					<td id="flat5">00</td>
+					<td id="flat6">00</td>
+				  </tr>
+				  <tr>
+					<td><b>Per Month %</b></td>
+					<td id="per_1">00</td>
+					<td id="per_1">00</td>
+					<td id="per_1">00 </td>
+					<td id="per_1">00</td>
+					<td id="per_1">00</td>
+					<td id="per_1">00</td>
+				  </tr>
+				  <tr>
+					<td><b>Extra</b></td>
+					<td id="ext_1">00</td>
+					<td id="ext_2">00</td>
+					<td id="ext_3">00 </td>
+					<td id="ext_4">00</td>
+					<td id="ext_5">00</td>
+					<td id="ext_6">00</td>
+				  </tr> 
+				  <tr>
+					<td><b>Extra Per Year</b></td>
+					<td id="py_1">00</td>
+					<td id="py_2">00</td>
+					<td id="py_3">00 </td>
+					<td id="py_4">00</td>
+					<td id="py_5">00</td>
+					<td id="py_6">00</td>
+				  </tr> 
+				  <tr>
+					<td><b>Extra Per Month</b></td>
+					<td id="pm_1">00</td>
+					<td id="pm_2">00</td>
+					<td id="pm_3">00 </td>
+					<td id="pm_4">00</td>
+					<td id="pm_5">00</td>
+					<td id="pm_6">00</td>
+				  </tr> 
+				  <tr>
+					<td><b>Extra Per Day</b></td>
+					<td id="pd_1">00</td>
+					<td id="pd_2">00</td>
+					<td id="pd_3">00 </td>
+					<td id="pd_4">00</td>
+					<td id="pd_5">00</td>
+					<td id="pd_6">00</td>
+				  </tr> 
+				
+			  </table>

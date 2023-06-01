@@ -1,0 +1,406 @@
+import time
+import openpyxl
+import pandas as pd
+import pyautogui
+from selenium import webdriver
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import traceback
+import os, shutil
+
+
+# -----------  Copy Blank Lead File-----------
+scr="\\\\172.16.10.106\\Automailer\\Blank Template"
+dest="\\\\172.16.10.106\\Automailer"
+
+files=os.listdir(scr)
+print(files)
+files2=os.listdir(dest)
+print((files2))
+os.chdir(scr)
+f_name = "Lead Output test.xlsx"
+if os.path.isfile(f_name):
+        print(dest)
+        full_dest=os.path.join(dest,f_name)
+        print(full_dest)
+        print("\n")
+        shutil.copy(f_name,full_dest)
+
+
+excel_data = pd.read_excel('\\\\172.16.10.106\\Automailer\\Account_Inputt_new.xlsx', sheet_name='Sheet1')
+industry = excel_data['Industry'].count()
+hqLoc = excel_data['Headquater_Location'].count()
+headCount = excel_data['Head_Count'].count()
+seniorityLevel = excel_data['Seniority_Level'].count()
+function = excel_data['Function'].count()
+count = 0
+
+
+driver = webdriver.Chrome("\\\\172.16.10.106\\Automailer\\Blank Template\\chromedriver103\\chromedriver.exe")
+driver.delete_all_cookies()
+driver.maximize_window()
+wait = WebDriverWait(driver, 15)
+driver.get("https://www.linkedin.com/sales/login")
+
+iFrame = driver.find_element(By.XPATH, "//iframe[@title='Login screen']")
+driver.switch_to.frame(iFrame)
+driver.find_element(By.ID, "username").send_keys("dixitjayesh321@gmail.com")
+driver.find_element(By.ID, "password").send_keys("wallstreet@123")
+driver.find_element(By.XPATH, "//button[@type='submit']").click()
+time.sleep(2)
+wait.until(EC.presence_of_element_located((By.XPATH, "//a[@id='ember32']"))).click()
+
+
+wait.until(EC.presence_of_element_located((By.XPATH, "//fieldset[@data-x-search-filter='INDUSTRY']"))).click()
+for i in range(industry):
+        addIndusty = driver.find_element(By.XPATH, "//input[@placeholder='Add industries']")
+        industryFromExcel = (excel_data['Industry'][i])
+        time.sleep(2)
+        addIndusty.send_keys(industryFromExcel)
+        time.sleep(2)
+        wait.until(EC.presence_of_element_located(
+                (By.XPATH, "//ul[@aria-label='Add industries']//li[1]"))).click()
+
+wait.until(EC.presence_of_element_located(
+                (By.XPATH, "//fieldset[@data-x-search-filter='COMPANY_HEADQUARTERS']//button"))).click()
+for j in range(hqLoc):
+
+        addLocation = driver.find_element(By.XPATH, "//input[@placeholder='Add locations']")
+        locationFromExcel = (excel_data['Headquater_Location'][j])
+        time.sleep(2)
+        addLocation.send_keys(locationFromExcel)
+        time.sleep(2)
+        wait.until(EC.presence_of_element_located(
+                (By.XPATH, "//ul[@aria-label='Add locations']//li[1]"))).click()
+
+wait.until(EC.presence_of_element_located(
+                (By.XPATH, "//fieldset[@data-x-search-filter='COMPANY_HEADCOUNT']"))).click()
+for k in range(headCount):
+
+
+        headCountFromExcel = (excel_data['Head_Count'][k])
+
+        time.sleep(2)
+
+        wait.until(EC.presence_of_element_located((By.XPATH, "//button[contains(.,'"+headCountFromExcel+"')]"))).click()
+
+wait.until(EC.presence_of_element_located(
+        (By.XPATH, "//fieldset[@data-x-search-filter='SENIORITY_LEVEL']"))).click()
+for l in range(seniorityLevel):
+        slFromExcel = (excel_data['Seniority_Level'][l])
+
+        wait.until(EC.presence_of_element_located(
+                (By.XPATH, "//span[contains(.,'" + slFromExcel + "')]")))
+        sl = driver.find_element(By.XPATH, "//span[contains(.,'" + slFromExcel + "')]")
+        hover = ActionChains(driver).move_to_element(sl)
+        hover.click().perform()
+
+wait.until(EC.presence_of_element_located((By.XPATH, "//fieldset[@data-x-search-filter='FUNCTION']"))).click()
+for m in range(function):
+        addFunction = driver.find_element(By.XPATH, "//input[@placeholder='Add functions']")
+        functionFromExcel = (excel_data['Function'][m])
+        time.sleep(2)
+        addFunction.send_keys(functionFromExcel)
+        time.sleep(2)
+        wait.until(EC.presence_of_element_located(
+                (By.XPATH, "//ul[@aria-label='Add functions']//li[1]"))).click()
+
+wait.until(EC.presence_of_element_located((By.XPATH, "//button[@aria-label='collapse']"))).click()
+
+wait.until(EC.presence_of_element_located((By.XPATH, "//div[@id='search-results-container']")))
+cnt = 0
+
+try:
+    wait.until(EC.presence_of_element_located((By.XPATH, "//div[@id='search-results-container']")))
+    # wait.until(EC.presence_of_element_located((By.XPATH, "//div[@class='p4 _vertical-scroll-results_1igybl']"))).click()
+    companyListPage1 = driver.find_elements(By.XPATH, "//div[@id='search-results-container']//ol/li")
+    sizeOfPage = len(companyListPage1)
+    print(sizeOfPage)
+    for i in range(sizeOfPage):
+        i = str(i + 1)
+
+        element = wait.until(EC.visibility_of_element_located(
+            (By.XPATH, "//div[@id='search-results-container']//ol/li[" + i + "]")))
+        driver.execute_script("arguments[0].scrollIntoView();", element)
+        driver.execute_script("(arguments[0]).click();", element)
+
+        findLeadName = driver.find_element(By.XPATH,
+                                           "//div[@id='search-results-container']//ol/li[" + i + "]//div[@class='artdeco-entity-lockup__content ember-view']//div[@class='artdeco-entity-lockup__title ember-view']")
+        profileLink = driver.find_element(By.XPATH,
+                                          "//div[@id='search-results-container']//ol/li[" + i + "]//div[@class='artdeco-entity-lockup__content ember-view']//div[@class='artdeco-entity-lockup__title ember-view']//a")
+        link = profileLink.get_attribute('href')
+        # print(link)
+        findConnectionType = "null"
+        try:
+            findConnectionType = driver.find_element(By.XPATH,
+                                                     "//div[@id='search-results-container']//ol//li[" + i + "]//div[@class='artdeco-entity-lockup__content ember-view']//div[@class='artdeco-entity-lockup__badge ember-view ml1']")
+            connectionType = findConnectionType.text
+        except:
+            connectionType = "Not Available"
+
+        findDesignation = driver.find_element(By.XPATH,
+                                              "//div[@id='search-results-container']//ol/li[" + i + "]//div[@class='artdeco-entity-lockup__subtitle ember-view t-14']//span[1]")
+
+        companyName = "null"
+        try:
+            findCompanyName = wait.until(EC.presence_of_element_located((By.XPATH,
+                                                                         "//div[@id='search-results-container']//ol/li[" + i + "]//div[@class='artdeco-entity-lockup__subtitle ember-view t-14']//a[@data-anonymize='company-name']")))
+            companyName = findCompanyName.text
+        except:
+            companyName = "Not Available"
+
+        findLocation = driver.find_element(By.XPATH,
+                                           "//div[@id='search-results-container']//ol/li[" + i + "]//div[@class='artdeco-entity-lockup__caption ember-view']//span[1]")
+        leadName = findLeadName.text
+        # connectionType = findConnectionType.text
+        designation = findDesignation.text
+
+        location = findLocation.text
+
+        srcfile = openpyxl.load_workbook('\\\\172.16.10.106\\Automailer\\Lead Output test.xlsx',
+                                         read_only=False)
+        sheetname = srcfile.get_sheet_by_name('Sheet1')
+        sheetname.cell(row=int(i) + 1 + cnt, column=1).value = leadName
+        sheetname.cell(row=int(i) + 1 + cnt, column=2).value = connectionType
+        sheetname.cell(row=int(i) + 1 + cnt, column=4).value = designation
+        sheetname.cell(row=int(i) + 1 + cnt, column=5).value = companyName
+        sheetname.cell(row=int(i) + 1 + cnt, column=6).value = location
+        sheetname.cell(row=int(i) + 1 + cnt, column=3).value = link
+        srcfile.save('\\\\172.16.10.106\\Automailer\\Lead Output test.xlsx')
+
+        cnt = cnt + sizeOfPage
+
+        wait.until(EC.element_to_be_clickable((By.XPATH, "//button[@aria-label='Next']"))).click()
+        continue
+
+
+except Exception as err:
+    print(err)
+    traceback.print_exc()
+clickToLogout = driver.find_element(By.XPATH, "//button[@id='ember24']")
+clickToLogout.click()
+time.sleep(2)
+logout = driver.find_element(By.XPATH, "//a[@href='/sales/logout?trk=d_sales2_app_header_logout']")
+logout.click()
+time.sleep(2)
+driver.quit()
+
+# ------------------ "zoominfoActivity" ----------------------------------------
+
+
+# import time
+import xlwings as xw
+# import openpyxl
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.support import expected_conditions as EC
+# from selenium.webdriver.support.wait import WebDriverWait
+# import pandas as pd
+# import os, shutil
+
+# excel_data = pd.read_excel('\\\\172.16.10.106\\Automailer\\Lead Output test.xlsx',
+#                            sheet_name='Sheet1')
+# leadCount = excel_data['Lead Name'].count()
+# companyCount = excel_data['Company'].count()
+# count = 0
+#
+#
+# driver = webdriver.Chrome("\\\\172.16.10.106\\Automailer\\Blank Template\\chromedriver103\\chromedriver.exe")
+# driver.maximize_window()
+# driver.implicitly_wait(10)
+# driver.get("https://login.zoominfo.com/")
+#
+#
+# userName = driver.find_element(By.ID, "okta-signin-username")
+# userName.send_keys("arkar@eosglobe.com")
+# password = driver.find_element(By.ID, "okta-signin-password")
+# password.send_keys("Eosglobe@8080")
+#
+# WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//label[@for='input42']"))).click()
+# signIn = driver.find_element(By.ID, "okta-signin-submit")
+# signIn.click()
+#
+# time.sleep(120)
+#
+# while True:
+#     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//input[@name='quick-search-input']")))
+#     driver.find_element(By.XPATH, "//input[@name='quick-search-input']").clear()
+#     searchBox = driver.find_element(By.XPATH, "//input[@name='quick-search-input']")
+#     leadName = (excel_data['Lead Name'][count])
+#     searchBox.send_keys(leadName)
+#
+#
+#     companyFrmXl = (excel_data['Company'][count])
+#     print(companyFrmXl)
+#
+#     list = driver.find_elements(By.XPATH,
+#                                 "//div[@class='contacts-search ng-star-inserted']//zi-quick-search-contact-result")
+#     noOfList = len(list)
+#     print(noOfList)
+#
+#     for x in range(noOfList):
+#         dropDownList = driver.find_elements(By.XPATH, "//zi-dotten-text[@class='item-title-company']")
+#         toMatch = dropDownList[x].text
+#
+#         if toMatch == companyFrmXl:
+#             print(toMatch)
+#             dropDownList[x].click()
+#             findDesignation = "null"
+#             try:
+#                 findDesignation = driver.find_element(By.XPATH,
+#                                                       "//zi-dotten-text[@class='contact-details-content-title dotten']")
+#                 designation = findDesignation.text
+#                 print(designation)
+#
+#             except:
+#                 designation = "Not Available"
+#
+#             findCompanyLink = "null"
+#             try:
+#                 findCompanyLink = driver.find_element(By.XPATH, "//zi-text[@class='secondary-text-color link']//a")
+#                 companyLink = findCompanyLink.get_attribute('href')
+#                 print(companyLink)
+#             except:
+#                 companyLink = "Not Available"
+#
+#             findHQPhoneNo = "null"
+#
+#             findDirectPhoneNo = "null"
+#             try:
+#                 findDirectPhoneNo = driver.find_element(By.XPATH,
+#                                                         "//*[@id='primaryContact']/div/div/div[1]/div[2]/zi-text[1]/div/a")
+#
+#                 directPhoneNo = findDirectPhoneNo.text
+#                 print(directPhoneNo)
+#             except:
+#                 directPhoneNo = "Not Available"
+#
+#             try:
+#                 findHQPhoneNo = driver.find_element(By.XPATH,
+#                                                     "//*[@id='primaryContact']/div/div/div[1]/div[2]/zi-text[2]/div/a")
+#
+#                 HqPhoneNo = findHQPhoneNo.text
+#                 print(HqPhoneNo)
+#             except:
+#                 HqPhoneNo = "Not Available"
+#
+#             try:
+#                 findMobileNo = driver.find_element(By.XPATH,
+#                                                    "//*[@id='primaryContact']/div/div/div[1]/div[2]/zi-text[3]/div/a")
+#
+#                 mobileNo = findMobileNo.text
+#                 print(mobileNo)
+#
+#             except:
+#                 mobileNo = "Not Available"
+#
+#             findCompanyEmail = "null"
+#             try:
+#                 findCompanyEmail = driver.find_element(By.XPATH,
+#                                                        "//div[@class='email-section ng-star-inserted']//a[@class='email-link']")
+#
+#                 editCompanyEmail = findCompanyEmail.text
+#                 CompanyEmail = (editCompanyEmail.split(sep=' (Business)', maxsplit=1)[0])
+#                 print(CompanyEmail)
+#             except:
+#                 CompanyEmail = "Not Available"
+#
+#             findPersonalEmail = "null"
+#             try:
+#                 findPersonalEmail = driver.find_element(By.XPATH,
+#                                                         "//div[@class='email-section ng-star-inserted']//a[@class='email-link ng-star-inserted']")
+#
+#                 editPersonalEmail = findPersonalEmail.text
+#                 PersonalEmail = (editPersonalEmail.split(sep=' (Supplemental)', maxsplit=1)[0])
+#                 print(PersonalEmail)
+#             except:
+#                 PersonalEmail = "Not Available"
+#
+#             findLocalAddress = "null"
+#             try:
+#                 findLocalAddress = driver.find_element(By.XPATH,
+#                                                        "//*[@id='primaryContact']/div/div/div[2]/div/div[2]/div/div[1]/div[2]/span")
+#                 localAddress = findLocalAddress.text
+#                 print(localAddress)
+#             except:
+#                 localAddress = "Not Available"
+#
+#             findHQ = "null"
+#             try:
+#                 findHQ = driver.find_element(By.XPATH,
+#                                              "//*[@id='primaryContact']/div/div/div[2]/div/div[2]/div/div[2]/div[2]/span")
+#                 headQuater = findHQ.text
+#                 print(headQuater)
+#             except:
+#                 headQuater = "Not Available"
+#
+#             findPrimaryAddr = "null"
+#             try:
+#                 findPrimaryAddr = driver.find_element(By.XPATH,
+#                                              "//zi-dotten-text[@class='full-page-industry dotten ng-star-inserted']")
+#                 PrimaryAddr = findPrimaryAddr.text
+#                 print(PrimaryAddr)
+#             except:
+#                 PrimaryAddr = "Not Available"
+#
+#             srcfile = openpyxl.load_workbook('\\\\172.16.10.106\\Automailer\\Lead Output test.xlsx',
+#                                              read_only=False)
+#             sheetname = srcfile.get_sheet_by_name('Sheet1')
+#             sheetname.cell(row=count + 2, column=7).value = designation
+#             sheetname.cell(row=count + 2, column=8).value = companyLink
+#             sheetname.cell(row=count + 2, column=9).value = directPhoneNo
+#             sheetname.cell(row=count + 2, column=10).value = HqPhoneNo
+#             sheetname.cell(row=count + 2, column=11).value = mobileNo
+#             sheetname.cell(row=count + 2, column=12).value = CompanyEmail
+#             sheetname.cell(row=count + 2, column=13).value = PersonalEmail
+#             sheetname.cell(row=count + 2, column=14).value = localAddress
+#             sheetname.cell(row=count + 2, column=15).value = headQuater
+#             sheetname.cell(row=count + 2, column=16).value = PrimaryAddr
+#
+#             srcfile.save('\\\\172.16.10.106\\Automailer\\Lead Output test.xlsx')
+#
+#
+#             driver.find_element(By.XPATH,
+#                                 "//*[@id='app-wrapper']/div[2]/dozi-root/zi-profile-page/zi-page-template/div/zi-header/div/div[1]/zi-header-back-button/div/div/span[1]").click()
+#
+#             break
+#         else:
+#             srcfile = openpyxl.load_workbook('\\\\172.16.10.106\\Automailer\\Lead Output test.xlsx',
+#                                              read_only=False)
+#             sheetname = srcfile.get_sheet_by_name('Sheet1')
+#             sheetname.cell(row=count + 2, column=7).value = "NA"
+#             sheetname.cell(row=count + 2, column=8).value = "NA"
+#             sheetname.cell(row=count + 2, column=9).value = "NA"
+#             sheetname.cell(row=count + 2, column=10).value = "NA"
+#             sheetname.cell(row=count + 2, column=11).value = "NA"
+#             sheetname.cell(row=count + 2, column=12).value = "NA"
+#             sheetname.cell(row=count + 2, column=13).value = "NA"
+#             sheetname.cell(row=count + 2, column=14).value = "NA"
+#             sheetname.cell(row=count + 2, column=15).value = "NA"
+#             sheetname.cell(row=count + 2, column=16).value = "NA"
+#             srcfile.save('\\\\172.16.10.106\\Automailer\\Lead Output test.xlsx')
+#
+#     if count == leadCount - 1:
+#         break
+#     count = count + 1
+# time.sleep(5)
+# driver.find_element(By.XPATH, "//i[@class='zic-icon icon close_24_icon ng-star-inserted']").click()
+# time.sleep(5)
+# pyautogui.press('esc')
+# time.sleep(5)
+# driver.find_element(By.XPATH, "//button[@aria-label='User profile']").click()
+# time.sleep(3)
+# driver.find_element(By.XPATH, "//a[@id='logout-button-id']").click()
+# time.sleep(2)
+# driver.quit()
+# time.sleep(2)
+# wb = xw.Book("\\\\172.16.10.106\\Automailer\\Blank Template\\data_transfer.xlsm")
+# macro1 = wb.macro("data_Copy")
+# time.sleep(3)
+# macro1()
+
+
+
+
